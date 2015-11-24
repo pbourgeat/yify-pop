@@ -36,6 +36,8 @@ var Shows = function () {
     request(eztvRequest.url, function (error, response, body) {
       if (!error) {
         var shows = JSON.parse(body);
+        
+//         console.log("shows", shows);
 
         self.respond({
           params: params,
@@ -59,9 +61,12 @@ var Shows = function () {
     var request = require('request');
     var baseURL = "http://" + req.headers.host + '/';
 
-    request('http://eztvapi.re/show/' + params.id, function (error, response, body) {
+    request('https://popcornwvnbg7jev.onion.to/show/' + params.id, function (error, response, body) {
+ //     console.log("request", 'https://popcornwvnbg7jev.onion.to/show/' + params.id);
       if (!error) {
         var show = JSON.parse(body);
+        
+//        console.log('this show:',show);
 
         if (show.episodes) {
           var seasons = [];

@@ -25,7 +25,7 @@ if (params.keywords && params.keywords !=='') {
     yify.search = params.keywords;
   }
   
-  var oldURL = baseURL + '?sort=' + yify.sort + '&genre=' + yify.genre + '&search=' + yify.search;
+  var oldURL = baseURL + '?sort=' + yify.sort + '&genres=' + yify.genre + '&search=' + yify.search;
 
   yify.previousDisabled = 'disabled';
   yify.nextDisabled = '';
@@ -48,9 +48,11 @@ if (params.keywords && params.keywords !=='') {
     yify.nextPage = oldURL + '&set=' + (yify.page + 1);
   }
 
-    // Set request URL
-  yify.url = 'https://yts.to/api/v2/list_movies.json?limit=18&quality=720p&sort_by=';
-  yify.url += yify.sort + '&genre=' + yify.genre + '&query_term=' + yify.search + yify.set;
+  // Set request URL
+  yify.url = 'http://api.torrentsapi.com/list?limit=18&quality=720p&sort_by=';
+  yify.url += yify.sort + '&genres=' + yify.genre + '&query_term=' + yify.search + yify.set;
+  
+ // console.log('yify.url', yify.url);
 
   return yify;
 };

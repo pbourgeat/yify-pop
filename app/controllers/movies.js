@@ -21,6 +21,45 @@ var eztv = require('../helpers/eztv');
 var streams = require('../helpers/streams');
 var passport = require('../helpers/passport')
 , requireAuth = passport.requireAuth;
+var sys = require('sys');
+var _ = require('underscore');
+
+
+var format = function (data, page, limit) {
+  var results = _.chain(data).map(function (movie) {
+  return {
+    id: movie.id,
+    type: 'movie',
+    imdb_code: movie.imdb,
+    title: movie.title,
+    year: movie.year,
+    genres: movie.genres,
+    rating: movie.rating,
+    runtime: movie.runtime,
+    image: movie.poster_med,
+    medium_cover_image: movie.poster_med,
+    backdrop: movie.poster_big,
+    synopsis: movie.description,
+    trailer: movie.trailer || false,
+    certification: movie.mpa_rating,
+    torrents: _.chain(movie.items).map(function (torrent) {
+      console.log(torrent);
+      return {
+          url: torrent.torrent_url,
+          magnet: torrent.torrent_magnet, //'magnet:?xt=urn:btih:' + torrent.hash + '&tr=udp://open.demonii.com:1337&tr=udp://tracker.coppersurfer.tk:6969',
+          size: torrent.size_bytes,
+          quality: torrent.quality,
+          seeds: torrent.torrent_seeds,
+          peers: torrent.torrent_peers
+        };
+        
+    }).value()   
+  };
+}).value();
+//console.log("results", results[0].torrents[0].url);
+return results;
+};
+
 
 var Movies = function () {
   if (geddy.config.private) {
@@ -40,19 +79,20 @@ var Movies = function () {
 
         try {
           yifyResponse = JSON.parse(body);
+//          console.log('yifyResponse',yifyResponse);
         } catch (error) {
           console.log(error);
-          yifyResponse.data.movie_count = 0;
-          yifyResponse.data.movies = [];
-                }
-        if (yifyResponse.data.movie_count > (yify.page * 18)) {
+          yifyResponse.MovieList.movie_count = 0;
+          yifyResponse.MovieList.movies = [];
+        }
+        if (yifyResponse.MovieList > (yify.page * 18)) {
           nextDisabled = 'disabled';
           nextPage = '#';
         }
 
         self.respond({
           params: params,
-          movies: yifyResponse.data.movies,
+          movies: format(yifyResponse.MovieList),
           baseURL: baseURL,
           previousPage: yifyRequest.previousPage,
           nextPage: yifyRequest.nextPage,

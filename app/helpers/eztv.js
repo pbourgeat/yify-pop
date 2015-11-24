@@ -21,14 +21,14 @@ exports.getParams = function (params, baseURL) {
     eztv.nextPage = baseURL + '/shows?set=' + (eztv.page + 1);
   }
 
-  eztv.url = 'http://eztvapi.re/shows/' + eztv.page;
+  eztv.url = 'https://popcornwvnbg7jev.onion.to/shows/' + eztv.page;
 
   if (params.lastUpdated && params.lastUpdated !== '') {
-    eztv.url = 'http://eztvapi.re/shows/last_updated/' + eztv.page;
+    eztv.url = 'https://popcornwvnbg7jev.onion.to/shows/last_updated/' + eztv.page;
   }
 
   if (params.search && params.search !== '') {
-    eztv.url = 'http://eztvapi.re/shows/search/' + params.search + '/all';
+    eztv.url = 'https://popcornwvnbg7jev.onion.to/shows/search/' + params.search + '/all';
     eztv.nextDisabled = 'disabled';
     eztv.nextPage = '#';
   }

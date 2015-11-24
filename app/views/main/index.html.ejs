@@ -10,29 +10,39 @@
 		<div class="panel-body">
         
 		<div class="media movie">
-        <%if (movies[i].state=='ok'){%><a class="pull-left" href="<%= baseURL %>/stream?id=<%= movies[i].id %>&file=<%= encodeURIComponent(movies[i].torrents[0].url) %>">
+        <%if (movies[i].torrents[0]){%><a class="pull-left" href="<%= baseURL %>/stream?id=<%= movies[i].id %>&imdb_code=<%= movies[i].imdb_code %>&title=<%= encodeURIComponent(movies[i].title) %>&seeds=<%= encodeURIComponent(movies[i].torrents[0].seeds) %>&peers=<%= encodeURIComponent(movies[i].torrents[0].peers) %>&medium_cover_image=<%= encodeURIComponent(movies[i].medium_cover_image) %>&file=<%= encodeURIComponent(movies[i].torrents[0].url) %>">
         <img class="media-object" src="<%= movies[i].medium_cover_image %>" alt="<%= movies[i].title %>"></a><%}else{%>
             <div class="pull-left"><img class=" media-object" src="<%= movies[i].medium_cover_image %>" alt="<%= movies[i].title %>"></div>
             <%}%>
 		
 		<div class="media-body">
-        <%if (movies[i].state=='ok'){%>
+        <%if (movies[i].torrents[0]){%>
             <p><div class="btn-group">
-                <a href="#" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-play"></span> PLAY MOVIE</a>
-                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                <a href="#!" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-play"></span> PLAY MOVIE</a>
+                <a href="#!" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <%for(x=0;x<movies[i].torrents.length;x++){%>
-                    <li><a href="<%= baseURL %>/stream?id=<%= movies[i].id %>&file=<%= encodeURIComponent(movies[i].torrents[x].url) %>"><%=movies[i].torrents[x].quality%></a></li>
+                    <li><a href="<%= baseURL %>/stream?id=<%= movies[i].id %>&imdb_code=<%= movies[i].imdb_code %>&title=<%= encodeURIComponent(movies[i].title) %>&seeds=<%= encodeURIComponent(movies[i].torrents[x].seeds) %>&peers=<%= encodeURIComponent(movies[i].torrents[x].peers) %>&medium_cover_image=<%= encodeURIComponent(movies[i].medium_cover_image) %>&file=<%= encodeURIComponent(movies[i].torrents[x].url) %>"><%=movies[i].torrents[x].quality%></a></li>
                     <%}%>
                 </ul>
             </div></p>
             <%}%>
-        <p><a class="btn btn-xs btn-default" href="http://www.dereferer.org/?http://www.imdb.com/title/<%= movies[i].imdb_code %>" target="_blank" ><span class="glyphicon glyphicon-facetime-video"></span> IMDB</a></p>
+        <p><a class="btn btn-xs btn-default" href="http://www.dereferer.org/?http://www.imdb.com/title/<%= movies[i].imdb_code %>" target="_blank" ><span class="glyphicon glyphicon-facetime-video"></span> IMDB</a>
 
-		<div class="well well-sm">
+
+		<%if (movies[i].trailer){%>
+		<a class="btn btn-xs btn-default" href="https://www.youtube.com/watch?v=<%= movies[i].trailer %>" target="_blank" ><span class="glyphicon glyphicon-facetime-video"></span> Trailer</a>
+		<%}%>
+		</p>
+    <div class="well well-sm">
+    <!--
+		Id: <%= movies[i].id %><br>
+		<%if (movies[i].torrents[0]){%>
+		Url: <%= movies[i].torrents[0].url %><br><%}%>
+		--!>
 		Rating: <%= movies[i].rating %><br>
 		Genre: <%= movies[i].genres %><br>
-        <%if (movies[i].state=='ok'){%>Health: <span class="label label-default">S: <%= movies[i].torrents[0].seeds %></span> <span class="label label-default">P: <%= movies[i].torrents[0].peers %></span><%}%>
+        <%if (movies[i].torrents[0]){%>Health: <span class="label label-default">S: <%= movies[i].torrents[0].seeds %></span> <span class="label label-default">P: <%= movies[i].torrents[0].peers %></span><%}%>
 		</div>
 		
 		</div></div></div></div></div>

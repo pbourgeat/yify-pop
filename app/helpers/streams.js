@@ -14,7 +14,7 @@ exports.create = function(self, streamURL, hostname, params) {
       self.redirect('/');
     } else {
       var osSpecificCommand = isWin ? 'cmd' : 'peerflix';
-      var osSpecificArgs = isWin ? ['/c', 'peerflix', decodeURIComponent(params.file),  '--port=' + port] : [decodeURIComponent(params.file),  '--port=' + port];
+      var osSpecificArgs = isWin ? ['/c', 'peerflix -r', decodeURIComponent(params.file),  '--port=' + port] : [decodeURIComponent(params.file),  '--port=' + port];
       var childStream = require('child')({
         command: osSpecificCommand,
         args: osSpecificArgs,
@@ -29,20 +29,18 @@ exports.create = function(self, streamURL, hostname, params) {
 
       // if it's a movie
       if (!params.show || params.show !== '1') {
-        request('https://yts.to/api/v2/movie_details.json?with_images=true&movie_id=' + params.id, function (error, response, body) {
-          if (!error && response.statusCode == 200) {
-            var yifyResponse = JSON.parse(body);
+ //       console.log('params', params);
 
             var data = {};
-            data.title = yifyResponse.data.title;
-            data.seeds = yifyResponse.data.torrents[0].seeds;
-            data.peers = yifyResponse.data.torrents[0].peers;
+            data.title = params.title;
+            data.seeds = params.seeds;
+            data.peers = params.peers;
                     
             // IMAGE : MEDIUM              
-            data.cover = yifyResponse.data.images.medium_cover_image;
+            data.cover = params.medium_cover_image;
 
             // fetch subtitles
-            request('http://api.yifysubtitles.com/subs/' + yifyResponse.data.imdb_code, function (error, response, body) {
+            request('http://api.yifysubtitles.com/subs/' + params.imdb_code, function (error, response, body) {
               if (!error && response.statusCode == 200) {
                 var yifySubsResponse = JSON.parse(body);
 
@@ -66,7 +64,7 @@ exports.create = function(self, streamURL, hostname, params) {
                       var fileName = zipEntry.entryName.toString();
                       var i = fileName.lastIndexOf('.');
                       if (fileName.substr(i) == '.srt') { // Only unzip the srt file
-                        var dir = "public/subtitles/" + yifyResponse.data.title + '/';
+                        var dir = "public/subtitles/" + params.title + '/';
                         zip.extractEntryTo(fileName, dir , false, true);
                         fs.renameSync(dir + fileName, dir + lang + '.srt'); // Rename to language.srt
                       }
@@ -80,7 +78,7 @@ exports.create = function(self, streamURL, hostname, params) {
                     fetchSub(subUrl, 'public/subtitles/' + lang + '.zip', lang, unzip);
                     // Build the subtitle url
                     subtitles[lang] = 'http://' + hostname + ':' + geddy.config.port + '/subtitles/';
-                    subtitles[lang] += encodeURIComponent(yifyResponse.data.title) + '/' + lang + '.srt';
+                    subtitles[lang] += encodeURIComponent(params.title) + '/' + lang + '.srt';
                   }
                 }
 
@@ -105,12 +103,12 @@ exports.create = function(self, streamURL, hostname, params) {
                 });
               }
             });
-          }
-        });
+//           }
+//         });
       }
       // else if it's a tv show
       else {
-        request('http://eztvapi.re/show/' + params.id, function (error, response, body) {
+        request('http://popcornwvnbg7jev.onion.to/show/' + params.id, function (error, response, body) {
           if (!error) {
             var show = JSON.parse(body);
 
